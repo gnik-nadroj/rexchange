@@ -47,3 +47,36 @@ impl Default for Order {
         }
     }
 }
+
+pub struct OrderAtPrice {
+    pub side: common::Side,
+    pub price: common::Price,
+    pub head_order: Option<refpool::PoolRef<Order>>,
+    pub prev_entry: Option<refpool::PoolRef<OrderAtPrice>>,
+    pub next_entry: Option<refpool::PoolRef<OrderAtPrice>>
+}
+
+impl Default for OrderAtPrice {
+    fn default() -> Self {
+        Self {
+            side: common::Side::Invalid,
+            price: common::INVALID_PRICE,
+            head_order: None,
+            prev_entry: None,
+            next_entry: None
+        }
+    }
+}
+
+impl fmt::Display for OrderAtPrice {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f,  "Order [side: {}, price: {}, head_order: {}, prev: {}, next: {}]",
+        self.side,
+        self.price,
+        self.head_order.as_ref().map_or("null".to_string(), |order| order.to_string()),       
+        self.prev_entry.as_ref().map_or(common::INVALID_ORDER_ID, |order_at_price| order_at_price.price),
+        self.next_entry.as_ref().map_or(common::INVALID_ORDER_ID, |order_at_price| order_at_price.price))
+    }
+}
+
+pub type OrderAtPriceHashMap = [OrderAtPrice; common::MAX_PRICE_LEVELS as usize];
