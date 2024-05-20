@@ -23,26 +23,26 @@ impl fmt::Display for ParticipantResponseType {
     }
 }
 pub struct ParticipantResponse {
-    response_type: ParticipantResponseType,
-    participant_id: common::ParticipantId,
-    symbol_id: common::SymbolId,
-    participant_order_id: common::OrderId,
-    market_order_id: common::OrderId,
-    side: common::Side,
-    price: common::Price,
-    exec_qty: common::Quantity,
-    leaves_qty: common::Quantity,
+    pub response_type: ParticipantResponseType,
+    pub participant_id: common::ParticipantId,
+    pub symbol_id: common::SymbolId,
+    pub participant_order_id: common::OrderId,
+    pub internal_order_id: common::OrderId,
+    pub side: common::Side,
+    pub price: common::Price,
+    pub exec_qty: common::Quantity,
+    pub leaves_qty: common::Quantity,
 }
 
 
 impl fmt::Display for ParticipantResponse {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f,  "ParticipantResponse [type: {}, ptid: {}, symb: {}, coid: {}, moid: {}, side: {}, exec_qty: {}, leaves_qty: {}, price: {}]",
+        write!(f,  "ParticipantResponse [type: {}, ptid: {}, symb: {}, poid: {}, ioid: {}, side: {}, exec_qty: {}, leaves_qty: {}, price: {}]",
         self.response_type,
         self.participant_id,
         self.symbol_id,
         self.participant_order_id,
-        self.market_order_id,
+        self.internal_order_id,
         self.side,
         self.exec_qty,
         self.leaves_qty,
@@ -57,7 +57,7 @@ impl Default for ParticipantResponse {
             participant_id: common::INVALID_PARTICIPANT_ID,
             symbol_id: common::INVALID_SYMBOL_ID,
             participant_order_id: common::INVALID_ORDER_ID,
-            market_order_id: common::INVALID_ORDER_ID,
+            internal_order_id: common::INVALID_ORDER_ID,
             side: common::Side::Invalid,
             exec_qty: common::INVALID_QUANTITY,
             leaves_qty: common::INVALID_QUANTITY,

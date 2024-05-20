@@ -1,4 +1,4 @@
-use std::fmt::{self};
+use std::fmt;
 
 use crate::common;
 
@@ -20,12 +20,12 @@ impl fmt::Display for ParticipantRequestType {
 }
 
 pub struct ParticipantRequest {
-    request_type: ParticipantRequestType,
-    participant_id: common::ParticipantId,
-    symbol_id: common::SymbolId,
-    order_id: common::OrderId,
-    side: common::Side,
-    price: common::Price
+    pub request_type: ParticipantRequestType,
+    pub participant_id: common::ParticipantId,
+    pub symbol_id: common::SymbolId,
+    pub order_id: common::OrderId,
+    pub side: common::Side,
+    pub price: common::Price
 }
 
 impl fmt::Display for ParticipantRequest {

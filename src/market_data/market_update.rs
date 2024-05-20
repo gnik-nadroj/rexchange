@@ -1,4 +1,4 @@
-use std::fmt::{self};
+use std::fmt;
 
 use crate::common;
 
@@ -23,21 +23,14 @@ impl fmt::Display for MarketUpdateType {
     }
 }
 
-/*MarketUpdateType type_ = MarketUpdateType::INVALID;
-    OrderId order_id_ = OrderId_INVALID;
-    TickerId ticker_id_ = TickerId_INVALID;
-    Side side_ = Side::INVALID;
-    Price price_ = Price_INVALID;
-    Qty qty_ = Qty_INVALID;
-    Priority priority_ = Priority_INVALID; */
 pub struct MarketUpdate {
-    update_type: MarketUpdateType,
-    order_id: common::OrderId,
-    symbol_id: common::SymbolId,
-    side: common::Side,
-    price: common::Price,
-    qty: common::Quantity,
-    priority: common::Priority
+    pub update_type: MarketUpdateType,
+    pub order_id: common::OrderId,
+    pub symbol_id: common::SymbolId,
+    pub side: common::Side,
+    pub price: common::Price,
+    pub qty: common::Quantity,
+    pub priority: common::Priority
 }
 
 impl fmt::Display for MarketUpdate {
