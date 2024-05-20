@@ -1,7 +1,8 @@
-use crate::order_server::participants_request;
+use crate::{market_data::market_update, order_server::{participants_request, participants_response}};
 
 mod common;
 mod order_server;
+mod market_data;
 
 fn main() {
     let e = common::INVALID_ORDER_ID;
@@ -11,8 +12,11 @@ fn main() {
     let e = common::Side::Invalid;
 
 
-    let server = participants_request::ParticipantRequest::default();
+    let req = participants_request::ParticipantRequest::default();
+    let res = participants_response::ParticipantResponse::default();
+    let market_update = market_update::MarketUpdate::default();
 
-
-    println!("{}", server);
+    println!("{}", req);
+    println!("{}", res);
+    println!("{}", market_update);
 }

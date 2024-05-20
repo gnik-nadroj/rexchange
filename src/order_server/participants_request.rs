@@ -1,12 +1,12 @@
 use std::fmt::{self};
 
-use crate::common::{self, INVALID_ORDER_ID};
+use crate::common;
 
 #[repr(u8)]
 pub enum ParticipantRequestType {
     Invalid = 0,
-    New = 1,
-    Cancel = 2
+    New,
+    Cancel
 }
 
 impl fmt::Display for ParticipantRequestType {
@@ -30,7 +30,8 @@ pub struct ParticipantRequest {
 
 impl fmt::Display for ParticipantRequest {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "ParticipantRequest[type: {}, ptid:{}, symb:{}, order:{}, side:{}, price:{}]", self.request_type, self.participant_id, self.symbol_id, self.order_id, self.side, self.price)
+        write!(f, "ParticipantRequest [type: {}, ptid:{}, symb:{}, order:{}, side:{}, price:{}]", 
+        self.request_type, self.participant_id, self.symbol_id, self.order_id, self.side, self.price)
     }
 }
 
@@ -40,7 +41,7 @@ impl Default for ParticipantRequest {
             request_type: ParticipantRequestType::Invalid,
             participant_id: common::INVALID_PARTICIPANT_ID,
             symbol_id: common::INVALID_SYMBOL_ID,
-            order_id: INVALID_ORDER_ID,
+            order_id: common::INVALID_ORDER_ID,
             side: common::Side::Invalid,
             price: common::INVALID_PRICE
         }

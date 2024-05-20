@@ -3,8 +3,8 @@ use std::fmt;
 #[repr(u8)]
 pub enum Side {
     Invalid = 0,
-    Buy = 1,
-    Sell = 2,
+    Buy,
+    Sell,
 }
 
 impl fmt::Display for Side {
