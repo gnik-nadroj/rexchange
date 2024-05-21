@@ -10,3 +10,18 @@ pub struct MatchingEngine {
     participants_response: Sender<ParticipantResponse>,
     market_data_updates: Sender<MarketUpdate>
 }
+
+
+impl MatchingEngine {
+    pub fn run() {
+
+    }
+
+    pub fn send_participant_response(&mut self, response: &ParticipantResponse) {
+
+    }
+
+    pub fn send_market_update(&mut self, update: &MarketUpdate) {
+        
+    }
+}

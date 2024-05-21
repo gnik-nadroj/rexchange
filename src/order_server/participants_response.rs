@@ -2,6 +2,7 @@ use std::fmt;
 
 use crate::common;
 
+#[derive(Clone)]
 #[repr(u8)]
 pub enum ParticipantResponseType {
     Invalid = 0,

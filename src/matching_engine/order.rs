@@ -1,33 +1,52 @@
 use std::fmt;
 
-use crate::common;
+use crate::common::{self, OrderId, INVALID_ORDER_ID};
+
+#[derive(Clone)]
+pub struct OrderInfo {
+    pub participant_id: common::ParticipantId,
+    pub order_id: common::OrderId,
+}
+
+impl Default for OrderInfo {
+    fn default() -> Self {
+        Self {
+            participant_id: common::INVALID_PARTICIPANT_ID,
+            order_id: common::INVALID_ORDER_ID,
+        }
+    }
+}
+
+impl fmt::Display for OrderInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Participant ID: {}, Order ID: {}", self.participant_id, self.order_id)
+    }
+}
 
 pub struct Order {
     pub symbol_id: common::SymbolId,
-    pub participant_id: common::ParticipantId,
-    pub participant_order_id: common::OrderId,
+    pub order_info: OrderInfo,
     pub internal_order_id: common::OrderId,
     pub side: common::Side,
     pub price: common::Price,
     pub qty: common::Quantity,
     pub priority: common::Priority,
-    pub prev_order: Option<refpool::PoolRef<Order>>,
-    pub next_order: Option<refpool::PoolRef<Order>>
+    pub prev_order_info: OrderInfo,
+    pub next_order_info: OrderInfo,
 }
 
 impl fmt::Display for Order {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f,  "Order [symb: {}, ptid: {}, poid: {}, ioid: {}, side: {}, price: {}, qty: {}, priority: {}, prev: {}, next:{}]",
+        write!(f,  "Order [symb: {}, order: {}, ioid: {}, side: {}, price: {}, qty: {}, priority: {}, prev: {}, next:{}]",
         self.symbol_id,
-        self.participant_id,
-        self.participant_order_id,
+        self.order_info,
         self.internal_order_id,
         self.side,
         self.price,
         self.qty,
         self.priority,
-        self.prev_order.as_ref().map_or(common::INVALID_ORDER_ID, |order| order.internal_order_id),
-        self.next_order.as_ref().map_or(common::INVALID_ORDER_ID, |order| order.internal_order_id))
+        self.prev_order_info,
+        self.next_order_info)
     }
 }
 
@@ -35,15 +54,14 @@ impl Default for Order {
     fn default() -> Self {
         Self {
             symbol_id: common::INVALID_SYMBOL_ID,
-            participant_id: common::INVALID_PARTICIPANT_ID,
-            participant_order_id: common::INVALID_ORDER_ID,
+            order_info: OrderInfo::default(),
             internal_order_id: common::INVALID_ORDER_ID,
             side: common::Side::Invalid,
             price: common::INVALID_PRICE,
             qty: common::INVALID_QUANTITY,
             priority: common::INVALID_PRIORITY,
-            prev_order: None,
-            next_order: None
+            prev_order_info: OrderInfo::default(),
+            next_order_info: OrderInfo::default(),
         }
     }
 }
@@ -51,9 +69,9 @@ impl Default for Order {
 pub struct OrderAtPrice {
     pub side: common::Side,
     pub price: common::Price,
-    pub head_order: Option<refpool::PoolRef<Order>>,
-    pub prev_entry: Option<refpool::PoolRef<OrderAtPrice>>,
-    pub next_entry: Option<refpool::PoolRef<OrderAtPrice>>
+    pub head_order_info: OrderInfo,
+    pub prev_id: usize,
+    pub next_id: usize
 }
 
 impl Default for OrderAtPrice {
@@ -61,22 +79,47 @@ impl Default for OrderAtPrice {
         Self {
             side: common::Side::Invalid,
             price: common::INVALID_PRICE,
-            head_order: None,
-            prev_entry: None,
-            next_entry: None
+            head_order_info: OrderInfo::default(),
+            prev_id: common::MAX_PRICE_LEVELS,
+            next_id: common::MAX_PRICE_LEVELS
         }
     }
 }
 
 impl fmt::Display for OrderAtPrice {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f,  "Order [side: {}, price: {}, head_order: {}, prev: {}, next: {}]",
+        write!(f,  "Order [side: {}, price: {}, head_order: {}, prev_id: {}, next_id: {}]",
         self.side,
         self.price,
-        self.head_order.as_ref().map_or("null".to_string(), |order| order.to_string()),       
-        self.prev_entry.as_ref().map_or(common::INVALID_ORDER_ID, |order_at_price| order_at_price.price),
-        self.next_entry.as_ref().map_or(common::INVALID_ORDER_ID, |order_at_price| order_at_price.price))
+        self.head_order_info,   
+        self.prev_id,
+        self.next_id)
     }
 }
 
-pub type OrderAtPriceHashMap = [OrderAtPrice; common::MAX_PRICE_LEVELS as usize];
+
+pub type OrderPtr = Option<refpool::PoolBox<Order>>;
+pub type OrderAtPricePtr = Option<refpool::PoolBox<OrderAtPrice>>;
+pub type OrderHashMap =  Vec<OrderPtr>;  //MAP ORDER AND IDS
+pub type OrderAtPriceLevelHashMap = Vec<OrderAtPricePtr>; //MAP OrderAtPrice With Price
+pub type ParticipantOrderHashMap = Vec<OrderHashMap>; // MAP PARTICIPANT AND ORDERS
+
+
+pub fn create_order_at_price_level_hash_map() -> OrderAtPriceLevelHashMap {
+    let mut orders: OrderAtPriceLevelHashMap = Vec::new();
+    orders.reserve(common::MAX_PRICE_LEVELS);
+    orders
+}
+
+pub fn create_order_hash_map() -> OrderHashMap {
+    let mut orders: OrderHashMap = Vec::new();
+    orders.reserve(common::MAX_ORDER_IDS);
+    orders
+}
+
+pub fn create_participant_order_hash_map() -> ParticipantOrderHashMap  {
+    let mut orders: ParticipantOrderHashMap = Vec::new();
+    orders.reserve(common::MAX_PARTICIPANTS_NUMBER);
+    orders
+}
+
