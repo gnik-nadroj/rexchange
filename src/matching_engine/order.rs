@@ -70,8 +70,8 @@ pub struct OrderAtPrice {
     pub side: common::Side,
     pub price: common::Price,
     pub head_order_info: OrderInfo,
-    pub prev_id: usize,
-    pub next_id: usize
+    pub prev_idx: usize,
+    pub next_idx: usize
 }
 
 impl Default for OrderAtPrice {
@@ -80,8 +80,8 @@ impl Default for OrderAtPrice {
             side: common::Side::Invalid,
             price: common::INVALID_PRICE,
             head_order_info: OrderInfo::default(),
-            prev_id: common::MAX_PRICE_LEVELS,
-            next_id: common::MAX_PRICE_LEVELS
+            prev_idx: common::MAX_PRICE_LEVELS,
+            next_idx: common::MAX_PRICE_LEVELS
         }
     }
 }
@@ -92,8 +92,8 @@ impl fmt::Display for OrderAtPrice {
         self.side,
         self.price,
         self.head_order_info,   
-        self.prev_id,
-        self.next_id)
+        self.prev_idx,
+        self.next_idx)
     }
 }
 
